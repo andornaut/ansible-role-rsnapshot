@@ -1,0 +1,87 @@
+---
+- name: Install Rsnapshot system packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - cron
+    - rsnapshot
+  become: true
+
+- name: Download database backup scripts
+  get_url:
+    url: "{{ item }}"
+    dest: /usr/local/bin/
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - https://raw.githubusercontent.com/andornaut/backup-mysql/master/backupmysql
+    - https://raw.githubusercontent.com/andornaut/backup-docker-postgresql/master/backupdockerpostgresql
+  become: true
+
+- name: Create backup_directory directory
+  file:
+    path: "{{ backup_directory }}"
+    state: directory
+    mode: 0700
+  become: true
+
+- name: Create rsnapshot.conf
+  template:
+    src: rsnapshot.conf.j2
+    dest: /etc/rsnapshot.conf
+  register: rsnapshot_conf
+  become: true
+
+- name: Validate rsnapshot.conf
+  command: rsnapshot configtest
+  when: rsnapshot_conf.changed
+  become: true
+
+- name: Set crontab hourly schedule
+  # TODO: Switch to systemd timers: https://wiki.archlinux.org/index.php/Rsnapshot#Automation
+  cron:
+    name: rsnapshot hourly
+    cron_file: /etc/crontab
+    user: root
+    minute: "1"
+    job: /usr/bin/rsnapshot hourly
+  when: retain.hourly
+  become: true
+
+- name: Set crontab daily schedule
+  cron:
+    name: rsnapshot daily
+    cron_file: /etc/crontab
+    user: root
+    minute: "15"
+    hour: "1"
+    job: /usr/bin/rsnapshot daily
+  when: retain.daily
+  become: true
+
+- name: Set crontab weekly schedule
+  cron:
+    name: rsnapshot weekly
+    cron_file: /etc/crontab
+    user: root
+    minute: "30"
+    hour: "6"
+    weekday: "1"
+    job: /usr/bin/rsnapshot weekly
+  when: retain.weekly
+  become: true
+
+- name: Set crontab monthly schedule
+  cron:
+    name: rsnapshot monthly
+    cron_file: /etc/crontab
+    user: root
+    minute: "45"
+    hour: "12"
+    day: "1"
+    job: /usr/bin/rsnapshot monthly
+  when: retain.monthly
+  become: true
+

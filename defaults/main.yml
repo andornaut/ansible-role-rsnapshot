@@ -1,0 +1,9 @@
+---
+backup_directory: /var/backups/rsnapshot/
+backup_hosts: []
+retain:
+  hourly:
+  daily: 7
+  weekly: 16
+  monthly: 24
+
