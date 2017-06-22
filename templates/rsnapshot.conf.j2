@@ -236,7 +236,7 @@ rsync_short_args	-az
 
 {% for host in backup_hosts %}
 {% for directory in host.directories|default((), true) %}
-backup	{{ host.user|default('root', true) }}@{{ host.name }}:{{ directory }}	{{ host.name }}/
+backup	{% if host.name != 'localhost' %}{{ host.user|default(ansible_env.USER, true) }}@{{ host.name }}:{% endif %}{{ directory }}	{{ host.name }}/
 {% endfor %}
 {% for script in host.scripts|default((), true) %}
 backup_script	{{ script.command }} {{ script.args }}	{{ host.name }}_{{ script.command|basename }}/
