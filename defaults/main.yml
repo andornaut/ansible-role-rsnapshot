@@ -4,6 +4,5 @@ backup_hosts: []
 retain:
   hourly:
   daily: 7
-  weekly: 16
-  monthly: 24
-
+  weekly: 4
+  monthly: 12
