@@ -1,12 +1,11 @@
 # ansible-role-rsnapshot
 
-
 An [Ansible](https://www.ansible.com/) role that installs
 [rsnapshot](http://rsnapshot.org/) and schedules automated backups.
 
 ## Variables
 
-See [default values](./defaults/main.yml)
+See [default values](./defaults/main.yml).
 
 ### Example configuration
 
