@@ -21,7 +21,7 @@
 
 - name: Create backup_directory directory
   file:
-    path: "{{ backup_directory }}"
+    path: "{{ rsnapshot_directory }}"
     state: directory
     mode: 0700
   become: true
@@ -46,7 +46,7 @@
     user: root
     minute: "1"
     job: /usr/bin/rsnapshot hourly
-  when: retain.hourly
+  when: rsnapshot_retention.hourly
   become: true
 
 - name: Set crontab daily schedule
@@ -57,7 +57,7 @@
     minute: "13"
     hour: "3"
     job: /usr/bin/rsnapshot daily
-  when: retain.daily
+  when: rsnapshot_retention.daily
   become: true
 
 - name: Set crontab weekly schedule
@@ -69,7 +69,7 @@
     hour: "4"
     weekday: "1"
     job: /usr/bin/rsnapshot weekly
-  when: retain.weekly
+  when: rsnapshot_retention.weekly
   become: true
 
 - name: Set crontab monthly schedule
@@ -81,6 +81,6 @@
     hour: "5"
     day: "1"
     job: /usr/bin/rsnapshot monthly
-  when: retain.monthly
+  when: rsnapshot_retention.monthly
   become: true
 

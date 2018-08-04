@@ -24,7 +24,7 @@ config_version	1.2
 
 # All snapshots will be stored under this root directory.
 #
-snapshot_root	{{ backup_directory }}
+snapshot_root	{{ rsnapshot_directory }}
 
 # If no_create_root is enabled, rsnapshot will not automatically create the
 # snapshot_root directory. This is particularly useful if you are backing
@@ -94,17 +94,17 @@ cmd_logger	/usr/bin/logger
 # i.e. hourly, daily, weekly, etc.      #
 #########################################
 
-{% if retain.hourly %}
-retain	hourly	{{ retain.hourly }}
+{% if rsnapshot_retention.hourly %}
+retain	hourly	{{ rsnapshot_retention.hourly }}
 {% endif %}
-{% if retain.daily %}
-retain	daily	{{ retain.daily }}
+{% if rsnapshot_retention.daily %}
+retain	daily	{{ rsnapshot_retention.daily }}
 {% endif %}
-{% if retain.weekly %}
-retain	weekly	{{ retain.weekly }}
+{% if rsnapshot_retention.weekly %}
+retain	weekly	{{ rsnapshot_retention.weekly }}
 {% endif %}
-{% if retain.monthly %}
-retain	monthly	{{ retain.monthly }}
+{% if rsnapshot_retention.monthly %}
+retain	monthly	{{ rsnapshot_retention.monthly }}
 {% endif %}
 
 ############################################
@@ -234,7 +234,7 @@ rsync_short_args	-az
 ### BACKUP POINTS / SCRIPTS ###
 ###############################
 
-{% for host in backup_hosts %}
+{% for host in rsnapshot_hosts %}
 {% for directory in host.directories|default((), true) %}
 backup	{% if host.name != 'localhost' %}{{ host.user|default(ansible_env.USER, true) }}@{{ host.name }}:{% endif %}{{ directory }}	{{ host.name }}/
 {% endfor %}
