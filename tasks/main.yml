@@ -54,8 +54,8 @@
     name: rsnapshot daily
     cron_file: /etc/crontab
     user: root
-    minute: "13"
-    hour: "3"
+    minute: "10"
+    hour: "1"
     job: /usr/bin/rsnapshot daily
   when: rsnapshot_retention.daily
   become: true
@@ -65,8 +65,8 @@
     name: rsnapshot weekly
     cron_file: /etc/crontab
     user: root
-    minute: "14"
-    hour: "4"
+    minute: "30"
+    hour: "3"
     weekday: "1"
     job: /usr/bin/rsnapshot weekly
   when: rsnapshot_retention.weekly
@@ -77,7 +77,7 @@
     name: rsnapshot monthly
     cron_file: /etc/crontab
     user: root
-    minute: "15"
+    minute: "50"
     hour: "5"
     day: "1"
     job: /usr/bin/rsnapshot monthly
