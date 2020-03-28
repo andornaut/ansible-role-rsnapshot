@@ -1,11 +1,10 @@
 ---
 - name: Install Rsnapshot system packages
   apt:
-    name: "{{ item }}"
+    name:
+      - cron
+      - rsnapshot
     update_cache: yes
-  with_items:
-    - cron
-    - rsnapshot
   become: true
 
 - name: Download database backup scripts
