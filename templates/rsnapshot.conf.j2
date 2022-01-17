@@ -149,6 +149,10 @@ lockfile	/var/run/rsnapshot.pid
 rsync_short_args	-az
 #rsync_long_args	--delete --numeric-ids --relative --delete-excluded
 
+{% if rsnapshot_sudo %}
+rsync_long_args	--delete --numeric-ids --relative --delete-excluded --rsync-path='sudo /usr/bin/rsync'
+{% endif %}
+
 # ssh has no args passed by default, but you can specify some here.
 #
 #ssh_args	-p 5022
@@ -236,10 +240,9 @@ rsync_short_args	-az
 
 {% for host in rsnapshot_hosts %}
 {% for directory in host.directories|default((), true) %}
-backup	{% if host.name != 'localhost' %}{{ host.user|default(ansible_env.USER, true) }}@{{ host.name }}:{% endif %}{{ directory }}	{{ host.name }}/
+backup	{% if not host.local|default(false) and host.name != 'localhost' %}{{ host.user|default(ansible_env.USER, true) }}@{{ host.name }}:{% endif %}{{ directory }}	{{ host.name }}/
 {% endfor %}
 {% for script in host.scripts|default((), true) %}
 backup_script	{{ script.command }} {{ script.args }}	{{ host.name }}_{{ script.command|basename }}/
 {% endfor %}
 {% endfor %}
-
